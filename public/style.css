@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    place-content: center;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: grid;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 400px;
+}
+
+.board {
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 40px;
+    width: 500px;
+}
+
+.hole {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    border: 2px solid red;
+    text-align: center;
+    align-content: center;
+    font-size: 24px;
+    user-select: none;
+}

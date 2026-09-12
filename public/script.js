@@ -2,6 +2,7 @@ const board = document.querySelector('.board');
 const scoreSpan = document.querySelector('.score span')
 const finalScoreSpan = document.querySelector('.final-score')
 const timeSpan = document.querySelector('.time span')
+const countdown = document.querySelector('.countdown')
 const holes = document.querySelectorAll('.hole')
 
 const startScreen = document.querySelector('.start-screen')
@@ -15,17 +16,20 @@ let score = 0
 let preIdx = 0
 
 let time = 30
+let moleDelay = 2000
 
 let gameStarted = false
-let gameIntervalId
+let moleIntervalId
+let timeIntervalId
+let countdownIntervalId
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function restartTimer() {
-    clearInterval(gameIntervalId)
-    gameIntervalId = setInterval(changeTime, 1500)
+function restartTimer(intervalId, func, delay) {
+    clearInterval(intervalId)
+    return setInterval(func, delay)
 }
 
 function changeTime() {
@@ -36,7 +40,16 @@ function changeTime() {
         gameOver()
         return
     }
-    drawRandomMole()
+
+    if (time === 20) {
+        moleDelay = 1500
+        moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
+    }
+
+    if (time === 10) {
+        moleDelay = 1000
+        moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
+    }
 }
 
 function drawRandomMole() {
@@ -55,13 +68,40 @@ function drawRandomMole() {
 
 function startGame() {
     gameStarted = true
-    restartTimer()
+    drawRandomMole()
+    timeIntervalId = restartTimer(timeIntervalId, changeTime, 1000)
+    moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
     console.log("Game started");
+}
+
+function startCountdown() {
+    clearInterval(countdownIntervalId)
+    gameStarted = false
+    holes.forEach((hole) => {
+        hole.textContent = ''
+    })
+    countdown.textContent = '3'
+    let count = 3
+
+    countdownIntervalId = setInterval(() => {
+        count--
+
+        if (count === 0) {
+            clearInterval(countdownIntervalId)
+            countdown.textContent = ''
+            startGame()
+            return
+        }
+
+        countdown.textContent = count
+    }, 1000)
 }
 
 function gameOver() {
     gameStarted = false
-    clearInterval(gameIntervalId)
+    clearInterval(countdownIntervalId)
+    clearInterval(timeIntervalId)
+    clearInterval(moleIntervalId)
     gameScreen.style.display = 'none'
     gameOverScreen.style.display = 'grid'
     finalScoreSpan.textContent = score
@@ -69,7 +109,6 @@ function gameOver() {
 }
 
 board.addEventListener('click', (event) => {
-    if (!gameStarted && time > 0) startGame()
     const hole = event.target.closest('.hole');
     if (!hole || hole.innerHTML == '' || time <= 0) return;
 
@@ -77,20 +116,23 @@ board.addEventListener('click', (event) => {
     score++
     scoreSpan.textContent = score
     drawRandomMole()
-    restartTimer()
+    moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
 })
 
 playBtn.addEventListener('click', () => {
     startScreen.style.display = 'none'
     gameScreen.style.display = 'grid'
+    startCountdown()
 })
 
 playAgainBtn.addEventListener('click', () => {
     score = 0
     time = 30
+    moleDelay = 2000
     scoreSpan.textContent = score
     timeSpan.textContent = time
     gameScreen.style.display = 'none'
     gameOverScreen.style.display = 'none'
     gameScreen.style.display = 'grid'
+    startCountdown()
 })

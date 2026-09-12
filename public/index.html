@@ -10,26 +10,41 @@
 
 <body>
     <div class="container">
-        <h1>Whack a Mole</h1>
+        <div class="start-screen">
+            <h1>Whack a Mole</h1>
+            <p>30 SECONDS. <br>HOW MANY CAN YOU HIT?</p>
 
-        <div class="status">
-            <div class="score">Score: <span>0</span></div>
-            <div class="time">Time: <span>30</span></div>
+            <button class="play">PLAY</button>
+            <button class="leaderboard">LEADERBOARD</button>
         </div>
 
-        <div class="board">
-            <div class="hole">🐹</div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
-            <div class="hole"></div>
+        <div class="game-screen">
+            <div class="status">
+                <div class="score">Score: <span>0</span></div>
+                <div class="time">Time: <span>30</span></div>
+            </div>
+
+            <div class="board">
+                <div class="hole">🐹</div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+                <div class="hole"></div>
+            </div>
+        </div>
+
+        <div class="game-over-screen">
+            <h1>Game Over</h1>
+            <p>Your Score: <span class="final-score">0</span></p>
+            <button class="play-again">Play Again</button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

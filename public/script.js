@@ -1,7 +1,15 @@
 const board = document.querySelector('.board');
 const scoreSpan = document.querySelector('.score span')
+const finalScoreSpan = document.querySelector('.final-score')
 const timeSpan = document.querySelector('.time span')
 const holes = document.querySelectorAll('.hole')
+
+const startScreen = document.querySelector('.start-screen')
+const gameScreen = document.querySelector('.game-screen')
+const gameOverScreen = document.querySelector('.game-over-screen')
+
+const playBtn = document.querySelector('.play')
+const playAgainBtn = document.querySelector('.play-again')
 
 let score = 0
 let preIdx = 0
@@ -9,53 +17,80 @@ let preIdx = 0
 let time = 30
 
 let gameStarted = false
-let gameIntervalId 
-
-board.addEventListener('click', (event) => {
-    if (!gameStarted && time > 0) startGame()
-    const hole = event.target.closest('.hole');
-    if (!hole || hole.innerHTML == '' || time <= 0) return;
-
-    score++
-    scoreSpan.textContent = score
-    drawRandomMole()
-})
+let gameIntervalId
 
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function drawRandomMole(){
+function restartTimer() {
+    clearInterval(gameIntervalId)
+    gameIntervalId = setInterval(changeTime, 1500)
+}
+
+function changeTime() {
+    time--
+    timeSpan.textContent = time
+
+    if (time <= 0) {
+        gameOver()
+        return
+    }
+    drawRandomMole()
+}
+
+function drawRandomMole() {
     let randomIdx = getRandomInt(0, 8)
-    while (randomIdx == preIdx){
+    while (randomIdx == preIdx) {
         randomIdx = getRandomInt(0, 8)
     }
     preIdx = randomIdx
 
-    holes.forEach((hole)=>{
+    holes.forEach((hole) => {
         hole.innerText = ""
     })
 
     holes[randomIdx].textContent = "🐹"
 }
 
-function startGame(){
+function startGame() {
     gameStarted = true
-    gameIntervalId = setInterval(changeTime, 1000)
+    restartTimer()
     console.log("Game started");
 }
 
-function gameOver(){
+function gameOver() {
     gameStarted = false
     clearInterval(gameIntervalId)
+    gameScreen.style.display = 'none'
+    gameOverScreen.style.display = 'grid'
+    finalScoreSpan.textContent = score
     console.log("Game over")
 }
 
-function changeTime(){
-    if (time <= 0) gameOver()
+board.addEventListener('click', (event) => {
+    if (!gameStarted && time > 0) startGame()
+    const hole = event.target.closest('.hole');
+    if (!hole || hole.innerHTML == '' || time <= 0) return;
 
-    time--
-    timeSpan.textContent = time
-
+    console.log('Hit!')
+    score++
+    scoreSpan.textContent = score
     drawRandomMole()
-}
+    restartTimer()
+})
+
+playBtn.addEventListener('click', () => {
+    startScreen.style.display = 'none'
+    gameScreen.style.display = 'grid'
+})
+
+playAgainBtn.addEventListener('click', () => {
+    score = 0
+    time = 30
+    scoreSpan.textContent = score
+    timeSpan.textContent = time
+    gameScreen.style.display = 'none'
+    gameOverScreen.style.display = 'none'
+    gameScreen.style.display = 'grid'
+})

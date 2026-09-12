@@ -3,6 +3,7 @@ const scoreSpan = document.querySelector('.score span')
 const finalScoreSpan = document.querySelector('.final-score')
 const timeSpan = document.querySelector('.time span')
 const countdown = document.querySelector('.countdown')
+
 const holes = document.querySelectorAll('.hole')
 
 const startScreen = document.querySelector('.start-screen')
@@ -115,7 +116,10 @@ board.addEventListener('click', (event) => {
     console.log('Hit!')
     score++
     scoreSpan.textContent = score
-    drawRandomMole()
+    hole.textContent = '💥'
+    setTimeout(() => {
+        drawRandomMole()
+    }, 200)
     moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
 })
 

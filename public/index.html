@@ -11,8 +11,10 @@
 <body>
     <div class="container">
         <div class="start-screen">
+            <div class="brand-mark">🔨</div>
             <h1>Whack a Mole</h1>
-            <p>30 SECONDS. <br>HOW MANY CAN YOU HIT?</p>
+            <p class="eyebrow">CASUAL BLITZ</p>
+            <p>30 seconds.<br>How many can you hit?</p>
 
             <button class="play">PLAY</button>
             <button class="leaderboard">LEADERBOARD</button>
@@ -20,8 +22,14 @@
 
         <div class="game-screen">
             <div class="status">
-                <div class="score">Score: <span>0</span></div>
-                <div class="time">Time: <span>30</span></div>
+                <div class="stat">
+                    <small>SCORE</small>
+                    <strong class="score"><span>0</span></strong>
+                </div>
+                <div class="stat">
+                    <small>TIME LEFT</small>
+                    <strong class="time"><span>30</span>s</strong>
+                </div>
             </div>
 
             <div class="countdown" aria-live="assertive"></div>
@@ -40,6 +48,7 @@
         </div>
 
         <div class="game-over-screen">
+            <div class="brand-mark">🔨</div>
             <h1>Game Over</h1>
             <p>Your Score: <span class="final-score">0</span></p>
             <button class="play-again">Play Again</button>

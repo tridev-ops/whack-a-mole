@@ -31,6 +31,129 @@ body {
     text-align: center;
 }
 
+.leaderboard-page {
+    width: min(100%, 560px);
+    margin: 0 auto;
+}
+
+.leaderboard-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.leaderboard-header h1 {
+    margin: 2px 0 4px;
+}
+
+.leaderboard-header p:last-child {
+    font-size: 14px;
+}
+
+.leaderboard-panel {
+    overflow: hidden;
+    background: rgba(21, 20, 18, .92);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+}
+
+.leaderboard-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--panel-border);
+}
+
+.leaderboard-panel h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.refresh {
+    min-width: auto;
+    padding: 7px 11px;
+    font-size: 13px;
+}
+
+.refresh span {
+    margin-left: 4px;
+}
+
+.leaderboard-status {
+    min-height: 20px;
+    padding: 18px 20px 6px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.leaderboard-status.error {
+    color: #e58c76;
+}
+
+.scores-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 12px 14px 16px;
+    list-style: none;
+}
+
+.score-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 54px;
+    padding: 8px 12px;
+    background: #1b1916;
+    border: 1px solid #28241f;
+    border-radius: 8px;
+}
+
+.score-row.top-score {
+    background: #211a0c;
+    border-color: #5b410b;
+}
+
+.rank {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.top-score .rank {
+    color: var(--accent);
+}
+
+.player {
+    overflow: hidden;
+    color: var(--text);
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score-row strong {
+    min-width: 44px;
+    text-align: right;
+}
+
+.back-link {
+    display: block;
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--accent);
+}
+
 .status {
     display: flex;
     justify-content: space-around;
@@ -203,5 +326,13 @@ button:hover {
 
     .stat {
         min-width: 100px;
+    }
+
+    .leaderboard-header {
+        align-items: flex-start;
+    }
+
+    .leaderboard-header .brand-mark {
+        flex: 0 0 auto;
     }
 }

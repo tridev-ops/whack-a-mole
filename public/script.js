@@ -12,6 +12,7 @@ const gameOverScreen = document.querySelector('.game-over-screen')
 
 const playBtn = document.querySelector('.play')
 const playAgainBtn = document.querySelector('.play-again')
+const leaderboardBtn = document.querySelector('.leaderboard')
 
 let score = 0
 let preIdx = 0
@@ -125,7 +126,6 @@ function drawRandomMole() {
     holes.forEach((hole) => {
         hole.innerText = ""
     })
-
     holes[randomIdx].textContent = "🐹"
 }
 
@@ -135,7 +135,6 @@ function startGame() {
     timeIntervalId = restartTimer(timeIntervalId, changeTime, 1000)
     moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
     playStartSound()
-    console.log("Game started");
 }
 
 function startCountdown() {
@@ -162,6 +161,36 @@ function startCountdown() {
     }, 1000)
 }
 
+function askForName() {
+    let name = localStorage.getItem('username')
+    if (!name) {
+        name = prompt("Enter your name:")
+        if (name) {
+            localStorage.setItem('username', name)
+        }
+    }
+}
+
+async function saveScore() {
+    const username = localStorage.getItem('username') || 'Anonymous'
+    try {
+        const response = await fetch('/api/scores', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, score: parseInt(score) })
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data.error || `Request failed with status ${response.status}`)
+        }
+        console.log('Score saved:', data)
+    } catch (error) {
+        console.error('Error saving score:', error)
+    }
+}
+
 function gameOver() {
     gameStarted = false
     clearInterval(countdownIntervalId)
@@ -171,14 +200,14 @@ function gameOver() {
     gameOverScreen.style.display = 'grid'
     finalScoreSpan.textContent = score
     playGameOverSound()
-    console.log("Game over")
+    askForName()
+    saveScore()
 }
 
 board.addEventListener('click', (event) => {
     const hole = event.target.closest('.hole');
     if (!hole || hole.innerHTML == '' || time <= 0) return;
 
-    console.log('Hit!')
     score++
     scoreSpan.textContent = score
     hole.textContent = '💥'
@@ -207,4 +236,8 @@ playAgainBtn.addEventListener('click', () => {
     gameOverScreen.style.display = 'none'
     gameScreen.style.display = 'grid'
     startCountdown()
+})
+
+leaderboardBtn.addEventListener('click', () => {
+    window.location.href = '/leaderboard'
 })

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <main class="leaderboard-page">
+        <header class="leaderboard-header">
+            <div class="brand-mark" aria-hidden="true">🔨</div>
+            <div>
+                <p class="eyebrow">CASUAL BLITZ</p>
+                <h1>Leaderboard</h1>
+                <p>Top scores from the mole-bashing crew.</p>
+            </div>
+        </header>
+
+        <section class="leaderboard-panel" aria-labelledby="scores-heading">
+            <div class="leaderboard-panel-header">
+                <h2 id="scores-heading">Top 10</h2>
+                <button class="refresh" type="button" aria-label="Refresh leaderboard">↻ <span>Refresh</span></button>
+            </div>
+            <div id="leaderboard-status" class="leaderboard-status" role="status" aria-live="polite">Loading scores...</div>
+            <ol id="scores-list" class="scores-list"></ol>
+        </section>
+
+        <a class="back-link" href="/">← Back to game</a>
+    </div>
+    <script defer>
+        const scoresList = document.getElementById('scores-list');
+        const status = document.getElementById('leaderboard-status');
+        const refreshButton = document.querySelector('.refresh');
+
+        async function fetchScores() {
+            const response = await fetch("/api/scores");
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+            return response.json();
+        }
+
+        async function displayScores() {
+            scoresList.replaceChildren();
+            status.textContent = 'Loading scores...';
+            status.className = 'leaderboard-status';
+
+            try {
+                const scores = await fetchScores();
+                if (scores.length === 0) {
+                    status.textContent = 'No scores yet. Be the first to play!';
+                    return;
+                }
+
+                status.textContent = '';
+                scores.forEach((score, index) => {
+                    const item = document.createElement('li');
+                    item.className = `score-row${index < 3 ? ' top-score' : ''}`;
+                    item.innerHTML = `
+                        <span class="rank">${index + 1}</span>
+                        <span class="player">${escapeHtml(score.username)}</span>
+                        <strong>${score.score}</strong>
+                    `;
+                    scoresList.appendChild(item);
+                });
+            } catch (error) {
+                status.textContent = 'Could not load scores. Try again.';
+                status.className = 'leaderboard-status error';
+            }
+        }
+
+        function escapeHtml(value) {
+            const element = document.createElement('span');
+            element.textContent = value;
+            return element.innerHTML;
+        }
+
+        refreshButton.addEventListener('click', displayScores);
+        displayScores();
+    </script>
+</body>
+
+</html>

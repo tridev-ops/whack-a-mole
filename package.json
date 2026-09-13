@@ -1,0 +1,26 @@
+{
+  "name": "whack-a-mole",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/tridev-ops/whack-a-mole#readme",
+  "bugs": {
+    "url": "https://github.com/tridev-ops/whack-a-mole/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tridev-ops/whack-a-mole.git"
+  },
+  "license": "MIT",
+  "author": "tridev",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}

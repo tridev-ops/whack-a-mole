@@ -18,10 +18,10 @@ body {
     margin: 0;
     padding: 24px;
     display: grid;
-    place-content: center;
+    place-items: center;
     background: radial-gradient(circle at 50% 20%, #1a1714 0, var(--background) 48%);
     color: var(--text);
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .container {
@@ -32,8 +32,10 @@ body {
 }
 
 .leaderboard-page {
+    position: relative;
     width: min(100%, 560px);
     margin: 0 auto;
+    padding-bottom: 56px;
 }
 
 .leaderboard-header {
@@ -45,6 +47,11 @@ body {
 
 .leaderboard-header h1 {
     margin: 2px 0 4px;
+}
+
+.leaderboard-header .brand-mark {
+    flex: 0 0 auto;
+    margin: 0;
 }
 
 .leaderboard-header p:last-child {
@@ -152,6 +159,27 @@ body {
 
 .back-link:hover {
     color: var(--accent);
+}
+
+.site-footer {
+    position: fixed;
+    right: 0;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.site-footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
 }
 
 .status {

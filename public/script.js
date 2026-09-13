@@ -23,7 +23,71 @@ let gameStarted = false
 let moleIntervalId
 let timeIntervalId
 let countdownIntervalId
+let audioCtx = null
 
+function ensureAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext
+    if (!AudioContextClass) return null
+
+    if (!audioCtx) {
+        audioCtx = new AudioContextClass()
+    }
+
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume()
+    }
+
+    return audioCtx
+}
+
+function playTone({ frequency = 440, duration = 0.12, type = 'sine', volume = 0.08, slide = 0, delay = 0 }) {
+    const ctx = ensureAudioContext()
+    if (!ctx) return
+
+    const oscillator = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    oscillator.type = type
+    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + delay)
+    if (slide !== 0) {
+        oscillator.frequency.linearRampToValueAtTime(frequency + slide, ctx.currentTime + delay + duration)
+    }
+
+    gainNode.gain.setValueAtTime(0.0001, ctx.currentTime + delay)
+    gainNode.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + delay + 0.02)
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration)
+
+    oscillator.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    oscillator.start(ctx.currentTime + delay)
+    oscillator.stop(ctx.currentTime + delay + duration)
+}
+
+function playCountdownSound() {
+    playTone({ frequency: 660, duration: 0.12, type: 'triangle', volume: 0.09, slide: 60 })
+}
+
+function playHitSound() {
+    playTone({ frequency: 190, duration: 0.08, type: 'square', volume: 0.12, slide: 70 })
+    setTimeout(() => {
+        playTone({ frequency: 260, duration: 0.08, type: 'triangle', volume: 0.09, slide: 40 })
+    }, 40)
+}
+
+function playStartSound() {
+    playTone({ frequency: 440, duration: 0.12, type: 'sine', volume: 0.1, slide: 40 })
+    setTimeout(() => {
+        playTone({ frequency: 620, duration: 0.16, type: 'triangle', volume: 0.1, slide: 70 })
+    }, 90)
+}
+
+function playGameOverSound() {
+    playTone({ frequency: 240, duration: 0.18, type: 'sawtooth', volume: 0.1, slide: -80 })
+    setTimeout(() => {
+        playTone({ frequency: 170, duration: 0.22, type: 'square', volume: 0.1, slide: -50 })
+    }, 120)
+}
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -41,12 +105,10 @@ function changeTime() {
         gameOver()
         return
     }
-
     if (time === 20) {
         moleDelay = 1500
         moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
     }
-
     if (time === 10) {
         moleDelay = 1000
         moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
@@ -72,6 +134,7 @@ function startGame() {
     drawRandomMole()
     timeIntervalId = restartTimer(timeIntervalId, changeTime, 1000)
     moleIntervalId = restartTimer(moleIntervalId, drawRandomMole, moleDelay)
+    playStartSound()
     console.log("Game started");
 }
 
@@ -95,6 +158,7 @@ function startCountdown() {
         }
 
         countdown.textContent = count
+        playCountdownSound()
     }, 1000)
 }
 
@@ -106,6 +170,7 @@ function gameOver() {
     gameScreen.style.display = 'none'
     gameOverScreen.style.display = 'grid'
     finalScoreSpan.textContent = score
+    playGameOverSound()
     console.log("Game over")
 }
 
@@ -117,6 +182,7 @@ board.addEventListener('click', (event) => {
     score++
     scoreSpan.textContent = score
     hole.textContent = '💥'
+    playHitSound()
     setTimeout(() => {
         drawRandomMole()
     }, 200)
@@ -124,12 +190,14 @@ board.addEventListener('click', (event) => {
 })
 
 playBtn.addEventListener('click', () => {
+    ensureAudioContext()
     startScreen.style.display = 'none'
     gameScreen.style.display = 'grid'
     startCountdown()
 })
 
 playAgainBtn.addEventListener('click', () => {
+    ensureAudioContext()
     score = 0
     time = 30
     moleDelay = 2000
